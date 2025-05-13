@@ -65,12 +65,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
-      
-      - name: Tag Docker image
-        run: docker tag myapp:latest ghcr.io/arielmonroy392/restapp:1.0.0
 
       - name: Push Docker image
-        run: docker push ghcr.io/arielmonroy392/restapp:1.0.0
+        run: docker push $GHCR_IMAGE:$TAG
+
 
   # ## 🚀 3. 
   # deploy-dev:
