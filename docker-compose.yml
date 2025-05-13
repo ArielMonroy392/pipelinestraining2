@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    image: ghcr.io/arielmonroy392/restapp:${TAG}
+    depends_on:
+      - redis
+    ports:
+      - "5000:${PORT}"  # cambia si tu app expone otro puerto
+    restart: unless-stopped
+
+  redisService:
+    image: redis:7.2
+    ports:
+      - "6379:6379"
+    restart: unless-stopped

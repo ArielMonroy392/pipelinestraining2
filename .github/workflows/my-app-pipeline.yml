@@ -2,19 +2,18 @@ name: CI
 
 on:
   push:
-    branches: ["arielMonroy_p2_base", "arielMonroy_p2_dev" ]
+    branches: ["arielMonroy_p2_base", "arielMonroy_p2_dev"]
   pull_request:
-    branches: ["arielMonroy_p2_base", "arielMonroy_p2_dev" ]
-
-
+    branches: ["arielMonroy_p2_base", "arielMonroy_p2_dev"]
   workflow_dispatch:
 
 env: 
-    SEM_VERSION: "1.0.0"
-    IMAGE_NAME: "arielmonroy392/restapp"
-    GHCR_IMAGE: "ghcr.io/arielmonroy392/restapp"
+  SEM_VERSION: "1.0.0"
+  IMAGE_NAME: "arielmonroy392/restapp"
+  GHCR_IMAGE: "ghcr.io/arielmonroy392/restapp"
+
 jobs:
-  ## 🔧 1. 
+  ## 🔧 1. Static analysis + tests
   Static-codecheck:
     runs-on: self-hosted
 
@@ -38,7 +37,7 @@ jobs:
         run: .venv/bin/coverage run -m pytest test/unit && .venv/bin/coverage report
 
 
-  # 🔧 2. 
+  ## 🔧 2. Build Docker image
   Build:
     runs-on: self-hosted
     needs: Static-codecheck
@@ -54,11 +53,13 @@ jobs:
           BUILD_NUMBER=${GITHUB_RUN_NUMBER}
           TAG="${BRANCH_NAME}-${SEM_VERSION}_${BUILD_NUMBER}"
           echo "TAG=$TAG" >> $GITHUB_ENV
+          echo "$TAG" > image_tag.txt  # Save tag for deploy step
 
       - name: Build Docker image
         run: |
           docker build -t $IMAGE_NAME:$TAG .
-          docker tag $IMAGE_NAME:$TAG $GHCR_IMAGE:$TAG      
+          docker tag $IMAGE_NAME:$TAG $GHCR_IMAGE:$TAG
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -69,27 +70,38 @@ jobs:
       - name: Push Docker image
         run: docker push $GHCR_IMAGE:$TAG
 
+      - name: Upload TAG as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: image-tag
+          path: image_tag.txt
 
-  # ## 🚀 3. 
-  # deploy-dev:
-  #   runs-on: ubuntu-latest
-  #   needs: Build
-  #   environment:
-  #     name: Develop
-  #     url: http://localhost:5000
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: Build
+    environment:
+      name: Develop
+      url: http://localhost:5000
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  # ## 🚀 4. 
-  # deploy-prod:
-  #   runs-on: ubuntu-latest
-  #   needs: deploy-dev
-  #   environment:
-  #     name: Production
-  #     url: http://localhost:5000
+      - name: Download image tag
+        uses: actions/download-artifact@v3
+        with:
+          name: image-tag
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
+      - name: Load tag into env
+        run: |
+          TAG=$(cat image_tag.txt)
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Create .env file for docker-compose
+        run: echo "IMAGE_TAG=$TAG" > .env
+
+      - name: Export env vars to file
+        run: echo "PORT=${{ vars.PORT }}" >> .env
+
+      - name: Docker Compose Up
+        run: docker-compose up -d
