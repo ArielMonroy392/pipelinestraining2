@@ -4,9 +4,9 @@ services:
   app:
     image: ghcr.io/arielmonroy392/restapp:${TAG}
     depends_on:
-      - redis
+      - redisService
     ports:
-      - "5000:${PORT}"  # cambia si tu app expone otro puerto
+      - "5000:${PORT}" 
     restart: unless-stopped
 
   redisService:

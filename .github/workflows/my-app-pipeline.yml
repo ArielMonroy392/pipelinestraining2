@@ -104,4 +104,6 @@ jobs:
         run: echo "PORT=${{ vars.PORT }}" >> .env
 
       - name: Docker Compose Up
-        run: docker-compose up -d
+        run: docker compose up -d
+
+      
