@@ -76,7 +76,7 @@ jobs:
           name: image-tag
           path: image_tag.txt
 
-  deploy-dev:
+  Deploy-dev:
     runs-on: ubuntu-latest
     needs: Build
     environment:
@@ -105,5 +105,18 @@ jobs:
 
       - name: Docker Compose Up
         run: docker compose up -d
+
+      - name: Install dependencies
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+      - name: Run integration tests
+        run: |
+          .venv/bin/python -m pytest test/integration -v
+      
+      - name: Docker Compose Down
+        run: docker compose down
+
+      
 
       
