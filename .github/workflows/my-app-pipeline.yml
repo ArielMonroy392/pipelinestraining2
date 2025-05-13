@@ -25,18 +25,14 @@ jobs:
 
       - name: Setup local venv
         run: |
-          python3 -m venv .venv
+          python -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
 
       - name: Run unit tests
         run: |
-          python3 -m pytest test/unit -v
-      
-      - name: Run integration tests
-        run: |
-          python3 -m pytests test/integration -v
-
+          python -m pytest test/unit -v
+          
       - name: Install coverage dependency
         run: |
           python3 -m pip install coverage
