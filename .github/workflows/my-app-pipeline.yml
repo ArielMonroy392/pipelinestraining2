@@ -119,6 +119,7 @@ jobs:
   Deploy-prod:
     runs-on: self-hosted
     needs: Deploy-dev
+    if: github.ref_name == 'arielMonroy_p2_base'
     environment:
       name: Production
       url: http://localhost:5001
