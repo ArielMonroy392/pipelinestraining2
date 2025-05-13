@@ -84,6 +84,8 @@ jobs:
       url: http://localhost:5000
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Download image tag
         uses: actions/download-artifact@v4
         with:
@@ -140,6 +142,7 @@ jobs:
 
       - name: Docker Compose Up
         run: docker compose up -d
+
 
       
 
