@@ -96,7 +96,11 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       - name: Push Docker image
-        run: docker push "$env:GHCR_IMAGE:$env:TAG"
+        run: |
+          $ghcrImage = "$env:GHCR_IMAGE"
+          $tag = "$env:TAG"
+          docker push "${ghcrImage}:${tag}"
+
 
       - name: Upload TAG as artifact
         uses: actions/upload-artifact@v4
