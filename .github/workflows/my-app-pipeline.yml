@@ -138,6 +138,8 @@ jobs:
       - name: Export env vars to file
         run: |
           Add-Content -Path .env -Value "PORT=${{ vars.PORT }}"
+          Add-Content -Path .env -Value "ENV=dev"
+          Add-Content -Path .env -Value "REDIS_PORT=${{ vars.REDIS_PORT }}"
 
       - name: Docker Compose Down 
         run: docker compose down
@@ -147,15 +149,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv .venv
-          .\.venv\Scripts\pip install -r requirements.txt
+          pip install -r requirements.txt
 
       - name: Run integration tests
         run: |
-          .\.venv\Scripts\python -m pytest test/integration -v
-
-      - name: Docker Compose Down
-        run: docker compose down
+          python -m pytest test/integration -v
 
   Deploy-prod:
     runs-on: self-hosted
@@ -184,6 +182,8 @@ jobs:
       - name: Export env vars to file
         run: |
           Add-Content -Path .env -Value "PORT=${{ vars.PORT }}"
+          Add-Content -Path .env -Value "ENV=prod"
+          Add-Content -Path .env -Value "REDIS_PORT=${{ vars.REDIS_PORT }}"
 
       - name: Docker Compose Up
         run: docker compose up -d
