@@ -77,15 +77,16 @@ jobs:
         run: |
           $imageName = "$env:IMAGE_NAME"
           $tag = "$env:TAG"
-          docker build -t "$imageName:$tag" .
+          docker build -t "${imageName}:${tag}" .
 
       - name: Tag image for GitHub Container Registry
         run: |
           $imageName = "$env:IMAGE_NAME"
           $ghcrImage = "$env:GHCR_IMAGE"
           $tag = "$env:TAG"
-          docker tag "$imageName:$tag" "$ghcrImage:$tag"
+          docker tag "${imageName}:${tag}" "${ghcrImage}:${tag}"
           docker images
+
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
