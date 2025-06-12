@@ -74,11 +74,17 @@ jobs:
           echo "TAG=$env:TAG"
 
       - name: Build Docker image
-        run: docker build -t "$env:IMAGE_NAME:$env:TAG" .
+        run: |
+          $imageName = "$env:IMAGE_NAME"
+          $tag = "$env:TAG"
+          docker build -t "$imageName:$tag" .
 
       - name: Tag image for GitHub Container Registry
         run: |
-          docker tag "$env:IMAGE_NAME:$env:TAG" "$env:GHCR_IMAGE:$env:TAG"
+          $imageName = "$env:IMAGE_NAME"
+          $ghcrImage = "$env:GHCR_IMAGE"
+          $tag = "$env:TAG"
+          docker tag "$imageName:$tag" "$ghcrImage:$tag"
           docker images
 
       - name: Login to GitHub Container Registry
