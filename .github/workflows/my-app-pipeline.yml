@@ -47,7 +47,7 @@ jobs:
         run: |
           coverage run -m pytest test/unit
           coverage report
-  jobs:
+
   ## 🔧 2. Build Docker image
   Build:
     runs-on: self-hosted
@@ -166,8 +166,3 @@ jobs:
 
       - name: Docker Compose Up
         run: docker compose up -d
-
-
-      
-
-      
