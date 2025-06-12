@@ -145,7 +145,7 @@ jobs:
         run: docker compose down
 
       - name: Docker Compose Up
-        run: docker compose up -d
+        run: docker compose -p dev up -d
 
       - name: Install dependencies
         run: |
@@ -186,4 +186,4 @@ jobs:
           Add-Content -Path .env -Value "REDIS_PORT=${{ vars.REDIS_PORT }}"
 
       - name: Docker Compose Up
-        run: docker compose up -d
+        run: docker compose -p prod up -d
