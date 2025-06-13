@@ -153,7 +153,7 @@ jobs:
 
       - name: Run integration tests with newman
         run: |
-          docker run --rm -v "$(pwd)/tests:/etc/newman" --network dev_default postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5000"
+          docker run --rm -v "$(pwd)/tests:/etc/newman" --network restapp-network-dev postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5000"
 
   Deploy-prod:
     runs-on: self-hosted
@@ -185,10 +185,13 @@ jobs:
           Add-Content -Path .env -Value "ENV=prod"
           Add-Content -Path .env -Value "REDIS_PORT=${{ vars.REDIS_PORT }}"
 
+      - name: Docker Compose Down
+        run: docker compose down
+
       - name: Docker Compose Up
         run: docker compose -p prod up -d
 
       - name: Run integration tests with newman
         run: |
-          docker run --rm -v "$(pwd)/tests:/etc/newman" --network prod_default postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5000"
+          docker run --rm -v "$(pwd)/tests:/etc/newman" --network restapp-network-prod postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5000"
 
