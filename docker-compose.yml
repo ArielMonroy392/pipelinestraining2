@@ -13,7 +13,8 @@ services:
 
   redisService:
     image: redis:alpine
-
+    ports:
+      - "6379:6379"
     restart: unless-stopped
     networks:
       - restapp-network
