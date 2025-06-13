@@ -193,5 +193,5 @@ jobs:
 
       - name: Run integration tests with newman
         run: |
-          docker run --rm -v "$(pwd)/tests:/etc/newman" --network restapp-network-prod postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5001"
+          docker run --rm -v "$(pwd)/tests:/etc/newman" --network restapp-network-prod postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5000"
 
