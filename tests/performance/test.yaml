@@ -1,0 +1,10 @@
+config:
+  target: 'http://app:5000'
+  phases:
+    - duration: 30
+      arrivalRate: 5
+scenarios:
+  - name: "Basic health check"
+    flow:
+      - get:
+          url: "/"
