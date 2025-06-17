@@ -156,7 +156,7 @@ jobs:
           docker run --rm -v "$(pwd)/tests:/etc/newman" --network restapp-network-dev postman/newman run /etc/newman/collections.json --env-var "base_url=http://app:5000"
       - name: Run performance tests with Artillery
         run: |
-          docker run --network restapp-network-dev -v "$(pwd):/app" -w /app/tests/performance artilleryio/artillery run test.yaml
+          docker run --rm --network restapp-network-dev -v "$(pwd):/app" -w /app/tests/performance artilleryio/artillery run test.yaml
 
   Deploy-prod:
     runs-on: self-hosted
